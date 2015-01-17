@@ -1,4 +1,5 @@
 import datetime
+from datetime import timedelta
 
 class ValidarEntrada:
     def validarFecha(self, date_text):
@@ -14,17 +15,43 @@ class ValidarEntrada:
             
     
 class Calculo:    
-    def calculohoras (self, fchcomienzo, fchfinal, horaFinal, minutoFinal):
+    def calculohoras (self, fchcomienzo, fchfinal):
         if fchcomienzo < fchfinal:
             difference = fchfinal - fchcomienzo
             print(difference.total_seconds()/60/60)
-    def calculomonto(self,totalHoras,horaFinal, minutoFinal):
-        if (horaFinal >= 18 and minutoFinal >= 1):
-            pass
+    def calculomonto(self, fchcomienzo, fchfinal):
+        recorrer = fchcomienzo
+        tasa = Tarifa()
+        tasaD = tasa.obtenerTasaDiurna()
+        tasaN = tasa.obtenerTasaNocturna()
+        monto = 0
+        while (recorrer < fchfinal):
+            """Caso diurno"""
+            if (6 <= recorrer.hour <= 16 or (recorrer.hour == 17 and recorrer.minute == 0)):
+                
+                monto = monto + tasaD
+                
+                """Caso cruzado"""
+            elif (recorrer.hour == 17 and recorrer.minute > 0 or(recorrer.hour == 18 and recorrer.minute == 0)
+                  or (recorrer.hour == 5 and recorrer.minute > 0) or(recorrer.hour == 6 and recorrer.minute == 0)):
+                 
+                if (tasaD >= tasaN):
+                    monto = monto + tasaD
+                else:
+                    monto = monto + tasaN
+                    
+                """Caso nocturno"""
+            elif (18 <= recorrer.hour or recorrer.hour <= 6):
+                monto = monto + tasaN
+                
+            
+            recorrer = recorrer + timedelta(hours=1)
+        return monto
+            
         
 class Tarifa:
-    __tasaDiurna = 0
-    __tasaNocturna = 0
+    __tasaDiurna = 10
+    __tasaNocturna = 20
     def definirTasaDiurna(self,tasa):
         self.__tasaDiurna = tasa
     def definirTasaNocturna(self,tasa):
@@ -35,7 +62,10 @@ class Tarifa:
         return self.__tasaNocturna
         
 """Main"""
-"""Ingreso de fechas y horas"""
+"""Ingreso de fechas, horas y tarifa"""
+tarifaDiurna = input("Ingresa la tarifa diurna: ")
+tarifaNocturna = input("Ingresa la tarifa nocturna: ")
+
 fechaComienzo = input("Ingresa la fecha de comienzo con el formato 'dd-mm-aaa': ")
 horaComienzo = input("Ingresa la hora de comienzo con el formato militar '21:03': ")
 
@@ -67,6 +97,11 @@ minutoC = int(horaCFormat[1])
 horaF = int(horaFFormat[0])
 minutoF = int(horaFFormat[1])
 
+"""Tarifa"""
+tarif = Tarifa()
+tarifD = tarif.definirTasaDiurna(tarifaDiurna)
+tarifN = tarif.definirTasaDiurna(tarifaDiurna)
+
 """Se crean los tipos datetime"""
 t = datetime.time(horaC, minutoC, 0)
 d = datetime.date(anioC, mesC, diaC)
@@ -75,4 +110,4 @@ tf = datetime.time(horaF, minutoF,0)
 df = datetime.date(anioF, mesF, diaF)
 fchfinal = datetime.datetime.combine(df, tf)
 x = Calculo()
-x.calculohoras(fchcomienzo, fchfinal, horaF, minutoF)
+print("El monto es:", x.calculomonto(fchcomienzo, fchfinal))
