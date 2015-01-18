@@ -28,11 +28,12 @@ class Calculo:
         else:
             return -1
     
-    def calculomonto(self, fchcomienzo, fchfinal):
+    def calculomonto(self, tarif, fchcomienzo, fchfinal):
         recorrer = fchcomienzo
-        tasa = Tarifa()
-        tasaD = tasa.obtenerTasaDiurna()
-        tasaN = tasa.obtenerTasaNocturna()
+        
+        tasaD = tarif.obtenerTasaDiurna()
+        tasaN = tarif.obtenerTasaNocturna()
+        
         monto = 0
         while (recorrer < fchfinal):
             """Caso diurno"""
@@ -59,9 +60,9 @@ class Calculo:
             
         
 class Tarifa:
-    def __init__(self):
-        self.tasaDiurna = 0
-        self.tasaNocturna = 0
+    def __init__(self, tasaDiurna = 0, tasaNocturna = 0):
+        self.tasaDiurna = tasaDiurna
+        self.tasaNocturna = tasaNocturna
     def definirTasaDiurna(self,tasa):
         self.tasaDiurna = tasa
     def definirTasaNocturna(self,tasa):
@@ -110,7 +111,7 @@ minutoF = int(horaFFormat[1])
 """Tarifa"""
 tarif = Tarifa()
 tarifD = tarif.definirTasaDiurna(int(tarifaDiurna))
-tarifN = tarif.definirTasaDiurna(int(tarifaNocturna))
+tarifN = tarif.definirTasaNocturna(int(tarifaNocturna))
 
 """Se crean los tipos datetime"""
 t = datetime.time(horaC, minutoC, 0)
@@ -122,4 +123,4 @@ fchfinal = datetime.datetime.combine(df, tf)
 
 ver.validarTiempoReserva(fchcomienzo, fchfinal)
 x = Calculo()
-print("El monto es:", x.calculomonto(fchcomienzo, fchfinal))
+print("El monto es:", x.calculomonto(tarif, fchcomienzo, fchfinal))
