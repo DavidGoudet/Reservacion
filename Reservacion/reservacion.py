@@ -7,6 +7,12 @@ class ValidarEntrada:
             datetime.datetime.strptime(date_text, '%d-%m-%Y')
         except ValueError:
                 raise ValueError("Formato de fecha erroneo, deberia ser 'dd-mm-aaa'")
+    def validarTiempoReserva(self, fechacom, fechafinal):        
+        tiempo = Calculo()
+        horas = (0.25 <= tiempo.calculohoras(fechacom, fechafinal) <= 72)
+        if (not horas):
+            raise Exception("La reservacion debe estar entre 15 minutos y 72 horas")
+        
     def validarHora(self, hour_text):
         try:
             datetime.datetime.strptime(hour_text, '%H:%M')
@@ -16,9 +22,12 @@ class ValidarEntrada:
     
 class Calculo:    
     def calculohoras (self, fchcomienzo, fchfinal):
-        if fchcomienzo < fchfinal:
-            difference = fchfinal - fchcomienzo
-            print(difference.total_seconds()/60/60)
+        if fchcomienzo <= fchfinal:
+            difference = fchfinal - fchcomienzo    
+            return (difference.total_seconds()/60/60)
+        else:
+            return -1
+    
     def calculomonto(self, fchcomienzo, fchfinal):
         recorrer = fchcomienzo
         tasa = Tarifa()
@@ -50,16 +59,17 @@ class Calculo:
             
         
 class Tarifa:
-    __tasaDiurna = 10
-    __tasaNocturna = 20
+    def __init__(self):
+        self.tasaDiurna = 0
+        self.tasaNocturna = 0
     def definirTasaDiurna(self,tasa):
-        self.__tasaDiurna = tasa
+        self.tasaDiurna = tasa
     def definirTasaNocturna(self,tasa):
-        self.__tasaNocturna = tasa
+        self.tasaNocturna = tasa
     def obtenerTasaDiurna(self):
-        return self.__tasaDiurna
+        return self.tasaDiurna
     def obtenerTasaNocturna(self):
-        return self.__tasaNocturna
+        return self.tasaNocturna
         
 """Main"""
 """Ingreso de fechas, horas y tarifa"""
@@ -99,8 +109,8 @@ minutoF = int(horaFFormat[1])
 
 """Tarifa"""
 tarif = Tarifa()
-tarifD = tarif.definirTasaDiurna(tarifaDiurna)
-tarifN = tarif.definirTasaDiurna(tarifaDiurna)
+tarifD = tarif.definirTasaDiurna(int(tarifaDiurna))
+tarifN = tarif.definirTasaDiurna(int(tarifaNocturna))
 
 """Se crean los tipos datetime"""
 t = datetime.time(horaC, minutoC, 0)
@@ -109,5 +119,7 @@ fchcomienzo = datetime.datetime.combine(d, t)
 tf = datetime.time(horaF, minutoF,0)
 df = datetime.date(anioF, mesF, diaF)
 fchfinal = datetime.datetime.combine(df, tf)
+
+ver.validarTiempoReserva(fchcomienzo, fchfinal)
 x = Calculo()
 print("El monto es:", x.calculomonto(fchcomienzo, fchfinal))
