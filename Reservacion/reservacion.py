@@ -1,6 +1,6 @@
 import datetime
 from datetime import timedelta
-from decimal import *
+from decimal import Decimal
 
 class ValidarEntrada:
     def validarFecha(self, date_text):
@@ -75,58 +75,96 @@ class Tarifa:
         return self.tasaDiurna
     def obtenerTasaNocturna(self):
         return self.tasaNocturna
+    
+class Entrada:
+    def __init__(self, tasaDiurna = 0, tasaNocturna = 0, fechaInicial = "00-00-0000",
+                  fechaFinal = "00-00-0000", horaInicial = "00:00", horaFinal = "00:00"):
+        self.tasaDiurna = tasaDiurna
+        self.tasaNocturna = tasaNocturna
+        self.fechaInicial = fechaInicial
+        self.fechaFinal = fechaFinal
+        self.horaInicial = horaInicial
+        self.horaFinal = horaFinal
+    def definirTarifaDiurna(self,tarifa):
+        self.tasaDiurna = tarifa
+    def definirTarifaNocturna(self,tarifa):
+        self.tasaNocturna = tarifa    
+    def definirFechaInicio(self, fecha):
+        self.fechaInicial = fecha
+    def definirFechaFinal(self, fecha):
+        self.fechaFinal = fecha
+    def definirHoraInicio(self, hora):
+        self.horaInicial = hora
+    def definirHoraFinal(self, hora):
+        self.horaFinal = hora
+    
+    def obtenerTarifaDiurna(self):
+        return self.tasaDiurna
+    def obtenerTarifaNocturna(self):
+        return self.tasaNocturna    
+    def obtenerFechaInicio(self):
+        return self.fechaInicial
+    def obtenerFechaFinal(self):
+        return self.fechaFinal
+    def obtenerHoraInicio(self):
+        return self.horaInicial
+    def obtenerHoraFinal(self):
+        return self.horaFinal
+    
+    def main(self):
+        """Entrada Manual
+        #Ingreso de fechas, horas y tarifa
+        tarifaDiurna = input("Ingresa la tarifa diurna: ")
+        tarifaNocturna = input("Ingresa la tarifa nocturna: ")
+            
+        fechaComienzo = input("Ingresa la fecha de comienzo con el formato 'dd-mm-aaaa': ")
+        horaComienzo = input("Ingresa la hora de comienzo con el formato militar '21:03': ")
         
-"""Main"""
-"""Ingreso de fechas, horas y tarifa"""
-tarifaDiurna = input("Ingresa la tarifa diurna: ")
-tarifaNocturna = input("Ingresa la tarifa nocturna: ")
-
-fechaComienzo = input("Ingresa la fecha de comienzo con el formato 'dd-mm-aaaa': ")
-horaComienzo = input("Ingresa la hora de comienzo con el formato militar '21:03': ")
-
-fechaFinalizacion = input("Ingresa la fecha de finalizacion con el formato 'dd-mm-aaaa': ")
-horaFinalizacion = input("Ingresa la hora de finalizacion con el formato militar '21:03': ")
-
-"""Verificar entradas"""
-ver = ValidarEntrada()
-ver.validarFecha(fechaComienzo)
-ver.validarFecha(fechaFinalizacion)
-ver.validarHora(horaComienzo)
-ver.validarHora(horaFinalizacion)
-ver.validarTasa(Decimal(tarifaDiurna))
-ver.validarTasa(Decimal(tarifaNocturna))
-
-"""Se hace parsing y se convierte a numeros"""
-"""Fechas"""
-fechaCFormat = fechaComienzo.split('-')
-fechaFFormat = fechaFinalizacion.split('-')
-diaC = int(fechaCFormat[0])
-mesC = int(fechaCFormat[1])
-anioC = int(fechaCFormat[2])
-diaF = int(fechaFFormat[0])
-mesF = int(fechaFFormat[1])
-anioF = int(fechaFFormat[2])
-"""Dias"""
-horaCFormat = horaComienzo.split(':')
-horaFFormat = horaFinalizacion.split(':')
-horaC = int(horaCFormat[0])
-minutoC = int(horaCFormat[1])
-horaF = int(horaFFormat[0])
-minutoF = int(horaFFormat[1])
-
-"""Tarifa"""
-tarif = Tarifa()
-tarifD = tarif.definirTasaDiurna(Decimal(tarifaDiurna))
-tarifN = tarif.definirTasaNocturna(Decimal(tarifaNocturna))
-
-"""Se crean los tipos datetime"""
-t = datetime.time(horaC, minutoC, 0)
-d = datetime.date(anioC, mesC, diaC)
-fchcomienzo = datetime.datetime.combine(d, t)
-tf = datetime.time(horaF, minutoF,0)
-df = datetime.date(anioF, mesF, diaF)
-fchfinal = datetime.datetime.combine(df, tf)
-
-ver.validarTiempoReserva(fchcomienzo, fchfinal)
-x = Calculo()
-print("El monto es:", x.calculomonto(tarif, fchcomienzo, fchfinal))
+        fechaFinalizacion = input("Ingresa la fecha de finalizacion con el formato 'dd-mm-aaaa': ")
+        horaFinalizacion = input("Ingresa la hora de finalizacion con el formato militar '21:03': ")
+        """
+        
+        """Verificar entradas"""
+        ver = ValidarEntrada()
+        ver.validarFecha(self.obtenerFechaInicio())
+        ver.validarFecha(self.obtenerFechaFinal())
+        ver.validarHora(self.obtenerHoraInicio())
+        ver.validarHora(self.obtenerHoraFinal())
+        ver.validarTasa(Decimal(self.obtenerTarifaDiurna()))
+        ver.validarTasa(Decimal(self.obtenerTarifaNocturna()))
+        
+        """Se hace parsing y se convierte a numeros"""
+        """Fechas"""
+        fechaCFormat = self.obtenerFechaInicio().split('-')
+        fechaFFormat = self.obtenerFechaFinal().split('-')
+        diaC = int(fechaCFormat[0])
+        mesC = int(fechaCFormat[1])
+        anioC = int(fechaCFormat[2])
+        diaF = int(fechaFFormat[0])
+        mesF = int(fechaFFormat[1])
+        anioF = int(fechaFFormat[2])
+        """Dias"""
+        horaCFormat = self.obtenerHoraInicio().split(':')
+        horaFFormat = self.obtenerHoraFinal().split(':')
+        horaC = int(horaCFormat[0])
+        minutoC = int(horaCFormat[1])
+        horaF = int(horaFFormat[0])
+        minutoF = int(horaFFormat[1])
+        
+        """Tarifa"""
+        tarif = Tarifa()
+        tarif.definirTasaDiurna(Decimal(self.obtenerTarifaDiurna()))
+        tarif.definirTasaNocturna(Decimal(self.obtenerTarifaNocturna()))
+        
+        """Se crean los tipos datetime"""
+        t = datetime.time(horaC, minutoC, 0)
+        d = datetime.date(anioC, mesC, diaC)
+        fchcomienzo = datetime.datetime.combine(d, t)
+        tf = datetime.time(horaF, minutoF,0)
+        df = datetime.date(anioF, mesF, diaF)
+        fchfinal = datetime.datetime.combine(df, tf)
+        
+        ver.validarTiempoReserva(fchcomienzo, fchfinal)
+        x = Calculo()
+        return x.calculomonto(tarif, fchcomienzo, fchfinal)
+    
