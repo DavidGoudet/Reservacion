@@ -1,12 +1,13 @@
 import datetime
 from datetime import timedelta
+from decimal import *
 
 class ValidarEntrada:
     def validarFecha(self, date_text):
         try:
             datetime.datetime.strptime(date_text, '%d-%m-%Y')
         except ValueError:
-                raise ValueError("Formato de fecha erroneo, deberia ser 'dd-mm-aaa'")
+                raise ValueError("Formato de fecha erroneo, deberia ser 'dd-mm-aaaa'")
     def validarTiempoReserva(self, fechacom, fechafinal):        
         tiempo = Calculo()
         horas = (0.25 <= tiempo.calculohoras(fechacom, fechafinal) <= 72)
@@ -18,6 +19,9 @@ class ValidarEntrada:
             datetime.datetime.strptime(hour_text, '%H:%M')
         except ValueError:
                 raise ValueError("Formato de hora erroneo, deberia ser formato militar '21:03'")
+    def validarTasa(self,tasa):
+        if (tasa < 0):
+            raise Exception("La tasa no puede ser negativa")
             
     
 class Calculo:    
@@ -77,10 +81,10 @@ class Tarifa:
 tarifaDiurna = input("Ingresa la tarifa diurna: ")
 tarifaNocturna = input("Ingresa la tarifa nocturna: ")
 
-fechaComienzo = input("Ingresa la fecha de comienzo con el formato 'dd-mm-aaa': ")
+fechaComienzo = input("Ingresa la fecha de comienzo con el formato 'dd-mm-aaaa': ")
 horaComienzo = input("Ingresa la hora de comienzo con el formato militar '21:03': ")
 
-fechaFinalizacion = input("Ingresa la fecha de finalizacion con el formato 'dd-mm-aaa': ")
+fechaFinalizacion = input("Ingresa la fecha de finalizacion con el formato 'dd-mm-aaaa': ")
 horaFinalizacion = input("Ingresa la hora de finalizacion con el formato militar '21:03': ")
 
 """Verificar entradas"""
@@ -89,6 +93,8 @@ ver.validarFecha(fechaComienzo)
 ver.validarFecha(fechaFinalizacion)
 ver.validarHora(horaComienzo)
 ver.validarHora(horaFinalizacion)
+ver.validarTasa(Decimal(tarifaDiurna))
+ver.validarTasa(Decimal(tarifaNocturna))
 
 """Se hace parsing y se convierte a numeros"""
 """Fechas"""
@@ -110,8 +116,8 @@ minutoF = int(horaFFormat[1])
 
 """Tarifa"""
 tarif = Tarifa()
-tarifD = tarif.definirTasaDiurna(int(tarifaDiurna))
-tarifN = tarif.definirTasaNocturna(int(tarifaNocturna))
+tarifD = tarif.definirTasaDiurna(Decimal(tarifaDiurna))
+tarifN = tarif.definirTasaNocturna(Decimal(tarifaNocturna))
 
 """Se crean los tipos datetime"""
 t = datetime.time(horaC, minutoC, 0)
