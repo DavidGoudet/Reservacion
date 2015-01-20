@@ -59,7 +59,10 @@ class Calculo:
                 monto = monto + tasaN
                 
             
-            recorrer = recorrer + timedelta(hours=1)
+            if not(recorrer.year == 9999 and recorrer.month == 12 and recorrer.day == 31 and recorrer.hour == 23):
+                recorrer = recorrer + timedelta(hours=1)
+            else:
+                recorrer = fchfinal
         return monto
             
         
