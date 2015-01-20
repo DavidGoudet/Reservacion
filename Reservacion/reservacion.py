@@ -115,18 +115,7 @@ class Entrada:
         return self.horaFinal
     
     def main(self):
-        """Entrada Manual
-        #Ingreso de fechas, horas y tarifa
-        tarifaDiurna = input("Ingresa la tarifa diurna: ")
-        tarifaNocturna = input("Ingresa la tarifa nocturna: ")
-            
-        fechaComienzo = input("Ingresa la fecha de comienzo con el formato 'dd-mm-aaaa': ")
-        horaComienzo = input("Ingresa la hora de comienzo con el formato militar '21:03': ")
-        
-        fechaFinalizacion = input("Ingresa la fecha de finalizacion con el formato 'dd-mm-aaaa': ")
-        horaFinalizacion = input("Ingresa la hora de finalizacion con el formato militar '21:03': ")
-        """
-        
+  
         """Verificar entradas"""
         ver = ValidarEntrada()
         ver.validarFecha(self.obtenerFechaInicio())
