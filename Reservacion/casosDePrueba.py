@@ -14,7 +14,7 @@ class CasosDePruebaReservaciones(unittest.TestCase):
             entrada.definirTarifaNocturna(tasaN)       
             return entrada.main()
     
-    
+        """definiendo fecha minima"""
         def testFechaMinima(self):
             self.failUnless(100 == self.ejecutarReservacion("01-01-0001","01-01-0001","0:00","1:00","100.00","100.00"))
             
