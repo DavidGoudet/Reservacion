@@ -40,14 +40,20 @@ class Calculo:
         
         monto = 0
         while (recorrer < fchfinal):
+            if not(recorrer.year == 9999 and recorrer.month == 12 and recorrer.day == 31 and recorrer.hour == 23):
+                recorrerMasUno = recorrer + timedelta(hours=1)
+            else:
+                recorrerMasUno = fchfinal
             """Caso diurno"""
-            if (6 <= recorrer.hour <= 16 or (recorrer.hour == 17 and recorrer.minute == 0)):
+            if (6 <= recorrer.hour <= 16 or (recorrer.hour == 17 and recorrer.minute == 0)
+                or (recorrer.hour == 17 and recorrerMasUno.hour > fchfinal.hour )):
                 
                 monto = monto + tasaD
                 
                 """Caso cruzado"""
-            elif (recorrer.hour == 17 and recorrer.minute > 0 or(recorrer.hour == 18 and recorrer.minute == 0)
-                  or (recorrer.hour == 5 and recorrer.minute > 0) or(recorrer.hour == 6 and recorrer.minute == 0)):
+            elif recorrerMasUno.hour <= fchfinal.hour and (((recorrer.hour == 17 and recorrer.minute > 0) 
+                  or (recorrer.hour == 18 and recorrer.minute == 0) or (recorrer.hour == 5 and recorrer.minute > 0) 
+                                                                    or(recorrer.hour == 6 and recorrer.minute == 0))):
                  
                 if (tasaD >= tasaN):
                     monto = monto + tasaD
@@ -55,7 +61,8 @@ class Calculo:
                     monto = monto + tasaN
                     
                 """Caso nocturno"""
-            elif (18 <= recorrer.hour or recorrer.hour <= 6):
+            elif (18 <= recorrer.hour or recorrer.hour <= 4 or (recorrer.hour == 5 and recorrer.minute == 0)
+                  or (recorrer.hour == 5 and recorrerMasUno.hour > fchfinal.hour )):
                 monto = monto + tasaN
                 
             
@@ -160,3 +167,18 @@ class Entrada:
         x = Calculo()
         return x.calculomonto(tarif, fchcomienzo, fchfinal)
     
+class Prueba:
+        def ejecutarReservacion(self, fchini, fchfinal, horaini, horafinal, tasaD, tasaN):
+            entrada = Entrada()
+            entrada.definirFechaInicio(fchini)
+            entrada.definirFechaFinal(fchfinal)
+            entrada.definirHoraInicio(horaini)
+            entrada.definirHoraFinal(horafinal)
+            entrada.definirTarifaDiurna(tasaD)
+            entrada.definirTarifaNocturna(tasaN)       
+            return entrada.main()
+    
+t= Prueba()
+print(t.ejecutarReservacion("01-01-0001","01-01-0001","05:44","5:59","100.00","200.00"))
+            
+
